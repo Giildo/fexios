@@ -1,0 +1,49 @@
+{
+  "name": "@jojotique/fexios",
+  "version": "0.0.1",
+  "description": "Library for making AJAX calls based on the fetch API",
+  "type": "module",
+  "files": [
+    "dist",
+    "types/index.d.ts"
+  ],
+  "keywords": [
+    "fetch",
+    "ajax",
+    "http",
+    "promise",
+    "node",
+    "browser",
+    "axios"
+  ],
+  "author": "Giild <giildo.jm@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Giildo/fexios.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Giildo/fexios/issues"
+  },
+  "homepage": "https://github.com/Giildo/fexios#readme",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "main": "./dist/fexios.js",
+  "module": "./dist/fexios.js",
+  "types": "./types/index.d.ts",
+  "exports": {
+    "types": "./types/index.d.ts",
+    "import": "./dist/fexios.js",
+    "require": "./dist/fexios.umd.cjs"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "catalog:",
+    "vite": "^6.0.6"
+  }
+}
