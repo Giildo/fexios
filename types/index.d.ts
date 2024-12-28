@@ -1,3 +1,5 @@
+import type { ApiException } from '@jojotique/server'
+
 export type Status100 = 100 | 101 | 102 | 103
 export type Status200 = 200 | 201 | 202 | 203 | 204 | 205 | 206 | 207 | 208 | 226
 export type Status300 = 300 | 301 | 302 | 303 | 304 | 305 | 306 | 307 | 308
@@ -109,8 +111,9 @@ export interface FexiosOptions {
 export type FexiosResponseHeaders = Record<string, string | number>
 
 export class FexiosResponse<D> {
-  data: D
+  data: D | ApiException
   headers: FexiosResponseHeaders
+  ok: boolean
   response: Response
   status: Status
   statusText: StatusText

@@ -104,6 +104,7 @@ console.log(response.data);
 interface FexiosResponse<D> {
   data: D
   headers: FexiosResponseHeaders
+  ok: boolean
   response: Response
   status: Status
   statusText: StatusText

@@ -15,7 +15,7 @@ export class Fexios {
   }
 
   async get<T>(url: string, options?: RequestInit): Promise<FexiosResponse<T>> {
-    return this.#getResponse<T>(await fetch(this.#getUrl(url), this.#getOptions('POST', options)))
+    return this.#getResponse<T>(await fetch(this.#getUrl(url), this.#getOptions('GET', options)))
   }
 
   async post<T>(url: string, body: unknown, options?: RequestInit): Promise<FexiosResponse<T>> {
@@ -39,7 +39,7 @@ export class Fexios {
       ...options,
       headers: {
         'Content-Type': 'application/json',
-        ...(options?.headers ?? {}),
+        ...options?.headers,
       },
       method,
     }
