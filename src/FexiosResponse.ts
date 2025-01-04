@@ -2,14 +2,14 @@ import type { FexiosResponse as FexiosResponseInterface, FexiosResponseHeaders, 
 import type { ApiException } from '@jojotique/server'
 
 export class FexiosResponse<D> implements FexiosResponseInterface<D> {
-  readonly data: D | ApiException
+  readonly data: D | ApiException | null
   readonly headers: FexiosResponseHeaders
   readonly ok: boolean
   readonly response: Response
   readonly status: Status
   readonly statusText: StatusText
 
-  constructor(data: D | ApiException, r: Response) {
+  constructor(data: D | ApiException | null, r: Response) {
     this.data = data
     this.headers = {}
     this.ok = r.ok

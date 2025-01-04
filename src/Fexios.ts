@@ -51,7 +51,7 @@ export class Fexios {
   }
 
   async #getResponse<T>(r: Response): Promise<FexiosResponse<T>> {
-    const response = new FexiosResponse(await r.json(), r)
+    const response = new FexiosResponse(r.status === 204 ? null : await r.json(), r)
     this.#withCredentials = false
     return response
   }

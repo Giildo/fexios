@@ -111,7 +111,7 @@ export interface FexiosOptions {
 export type FexiosResponseHeaders = Record<string, string | number>
 
 export class FexiosResponse<D> {
-  data: D | ApiException
+  data: D | ApiException | null
   headers: FexiosResponseHeaders
   ok: boolean
   response: Response
