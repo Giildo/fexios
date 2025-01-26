@@ -54,7 +54,7 @@
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "@vitest/eslint-plugin": "catalog:",
-    "eslint": "^9.18.0",
+    "eslint": "catalog:",
     "eslint-plugin-oxlint": "catalog:",
     "jsdom": "catalog:",
     "npm-run-all2": "^7.0.2",
@@ -62,6 +62,6 @@
     "prettier": "^3.4.2",
     "typescript": "catalog:",
     "vite": "catalog:",
-    "vitest": "^2.1.8"
+    "vitest": "catalog:"
   }
 }

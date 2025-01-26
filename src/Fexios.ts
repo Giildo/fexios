@@ -1,8 +1,10 @@
 import type { FexiosMethods, FexiosOptions } from '#/index'
 import { FexiosResponse } from '@/FexiosResponse.ts'
+import type { ApiException, ExceptionMessageType } from '@jojotique/server'
 
 export class Fexios {
   #baseUrl: string = ''
+  #isTextData: boolean = false
   #withCredentials: boolean = false
 
   constructor(options: FexiosOptions = {}) {
@@ -14,24 +16,47 @@ export class Fexios {
     return this
   }
 
-  async get<T>(url: string, options?: RequestInit): Promise<FexiosResponse<T>> {
-    return this.#getResponse<T>(await fetch(this.#getUrl(url), this.#getOptions('GET', options)))
+  get text(): this {
+    this.#isTextData = true
+    return this
   }
 
-  async post<T>(url: string, body: unknown, options?: RequestInit): Promise<FexiosResponse<T>> {
-    return this.#getResponse<T>(await fetch(this.#getUrl(url), this.#getOptions('POST', options, body)))
+  async get<D, E extends ExceptionMessageType = string>(
+    url: string,
+    options?: RequestInit,
+  ): Promise<FexiosResponse<D, E>> {
+    return this.#getResponse<D, E>(await fetch(this.#getUrl(url), this.#getOptions('GET', options)))
   }
 
-  async patch<T>(url: string, body: unknown, options?: RequestInit): Promise<FexiosResponse<T>> {
-    return this.#getResponse<T>(await fetch(this.#getUrl(url), this.#getOptions('PATCH', options, body)))
+  async post<D, E extends ExceptionMessageType = string>(
+    url: string,
+    body: unknown,
+    options?: RequestInit,
+  ): Promise<FexiosResponse<D, E>> {
+    return this.#getResponse<D, E>(await fetch(this.#getUrl(url), this.#getOptions('POST', options, body)))
   }
 
-  async put<T>(url: string, body: unknown, options?: RequestInit): Promise<FexiosResponse<T>> {
-    return this.#getResponse<T>(await fetch(this.#getUrl(url), this.#getOptions('PUT', options, body)))
+  async patch<D, E extends ExceptionMessageType = string>(
+    url: string,
+    body: unknown,
+    options?: RequestInit,
+  ): Promise<FexiosResponse<D, E>> {
+    return this.#getResponse<D, E>(await fetch(this.#getUrl(url), this.#getOptions('PATCH', options, body)))
   }
 
-  async delete<T>(url: string, options?: RequestInit): Promise<FexiosResponse<T>> {
-    return this.#getResponse<T>(await fetch(this.#getUrl(url), this.#getOptions('DELETE', options)))
+  async put<D, E extends ExceptionMessageType = string>(
+    url: string,
+    body: unknown,
+    options?: RequestInit,
+  ): Promise<FexiosResponse<D, E>> {
+    return this.#getResponse<D, E>(await fetch(this.#getUrl(url), this.#getOptions('PUT', options, body)))
+  }
+
+  async delete<D, E extends ExceptionMessageType = string>(
+    url: string,
+    options?: RequestInit,
+  ): Promise<FexiosResponse<D, E>> {
+    return this.#getResponse<D, E>(await fetch(this.#getUrl(url), this.#getOptions('DELETE', options)))
   }
 
   #getOptions(method: FexiosMethods, options?: RequestInit, body?: unknown) {
@@ -50,9 +75,19 @@ export class Fexios {
     return requestOptions
   }
 
-  async #getResponse<T>(r: Response): Promise<FexiosResponse<T>> {
-    const response = new FexiosResponse(r.status === 204 ? null : await r.json(), r)
+  #reset(): void {
     this.#withCredentials = false
+    this.#isTextData = false
+  }
+
+  async #getResponse<D, E extends ExceptionMessageType = string>(r: Response): Promise<FexiosResponse<D, E>> {
+    let data: D | ApiException<E> | null = null
+    if (r.status !== 204) {
+      data = this.#isTextData ? ((await r.text()) as unknown as D) : await r.json()
+    }
+
+    const response = new FexiosResponse<D, E>(data, r)
+    this.#reset()
     return response
   }
 

@@ -1,4 +1,4 @@
-import type { ApiException } from '@jojotique/server'
+import type { ApiException, ExceptionMessageType } from '@jojotique/server'
 
 export type Status100 = 100 | 101 | 102 | 103
 export type Status200 = 200 | 201 | 202 | 203 | 204 | 205 | 206 | 207 | 208 | 226
@@ -110,7 +110,7 @@ export interface FexiosOptions {
 
 export type FexiosResponseHeaders = Record<string, string | number>
 
-export class FexiosResponse<D> {
+export interface BasicFexiosResponse<D> {
   data: D | ApiException | null
   headers: FexiosResponseHeaders
   ok: boolean
@@ -119,18 +119,43 @@ export class FexiosResponse<D> {
   statusText: StatusText
 }
 
+export interface FexiosResponseError<E extends ExceptionMessageType> extends BasicFexiosResponse<null> {
+  data: ApiException<E>
+  ok: false
+}
+
+export interface FexiosResponseOK<D> extends BasicFexiosResponse<D> {
+  data: D
+  ok: true
+}
+
+export type FexiosResponse<D, E extends ExceptionMessageType = string> = FexiosResponseError<E> | FexiosResponseOK<D>
+
 export class Fexios {
   credentials: this
+  text: this
 
   constructor(options: FexiosOptions)
 
-  get<D>(url: string, options?: RequestInit): Promise<FexiosResponse<D>>
+  get<D, E extends ExceptionMessageType = string>(url: string, options?: RequestInit): Promise<FexiosResponse<D, E>>
 
-  post<D>(url: string, data: unknown, options?: RequestInit): Promise<FexiosResponse<D>>
+  post<D, E extends ExceptionMessageType = string>(
+    url: string,
+    data: unknown,
+    options?: RequestInit,
+  ): Promise<FexiosResponse<D, E>>
 
-  patch<D>(url: string, data: unknown, options?: RequestInit): Promise<FexiosResponse<D>>
+  patch<D, E extends ExceptionMessageType = string>(
+    url: string,
+    data: unknown,
+    options?: RequestInit,
+  ): Promise<FexiosResponse<D, E>>
 
-  put<D>(url: string, data: unknown, options?: RequestInit): Promise<FexiosResponse<D>>
+  put<D, E extends ExceptionMessageType = string>(
+    url: string,
+    data: unknown,
+    options?: RequestInit,
+  ): Promise<FexiosResponse<D, E>>
 
-  delete<D>(url: string, options?: RequestInit): Promise<FexiosResponse<D>>
+  delete<D, E extends ExceptionMessageType = string>(url: string, options?: RequestInit): Promise<FexiosResponse<D, E>>
 }

@@ -1,15 +1,15 @@
-import type { FexiosResponse as FexiosResponseInterface, FexiosResponseHeaders, Status, StatusText } from '#/index'
-import type { ApiException } from '@jojotique/server'
+import type { FexiosResponseHeaders, Status, StatusText } from '#/index'
+import type { ApiException, ExceptionMessageType } from '@jojotique/server'
 
-export class FexiosResponse<D> implements FexiosResponseInterface<D> {
-  readonly data: D | ApiException | null
+export class FexiosResponse<D, E extends ExceptionMessageType = string> {
+  readonly data: D | ApiException<E> | null
   readonly headers: FexiosResponseHeaders
   readonly ok: boolean
   readonly response: Response
   readonly status: Status
   readonly statusText: StatusText
 
-  constructor(data: D | ApiException | null, r: Response) {
+  constructor(data: D | ApiException<E> | null, r: Response) {
     this.data = data
     this.headers = {}
     this.ok = r.ok
