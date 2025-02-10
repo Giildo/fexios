@@ -11,7 +11,7 @@ export default defineConfig({
   build: {
     sourcemap: true,
     lib: {
-      entry: './src/index.ts',
+      entry: 'src/index.ts',
       name: 'Fexios',
       fileName: 'fexios',
     },
