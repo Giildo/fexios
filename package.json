@@ -59,7 +59,7 @@
     "jsdom": "catalog:",
     "npm-run-all2": "^7.0.2",
     "oxlint": "catalog:",
-    "prettier": "^3.4.2",
+    "prettier": "^3.5.1",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"
