@@ -1,6 +1,6 @@
 {
   "name": "@jojotique/fexios",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Library for making AJAX calls based on the fetch API",
   "type": "module",
   "files": [
@@ -31,7 +31,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "run-s tsc build-only",
+    "build-only": "vite build",
     "check": "run-s lint format",
     "test:unit": "vitest",
     "lint:oxlint": "oxlint . --fix -D correctness --ignore-path .gitignore",
