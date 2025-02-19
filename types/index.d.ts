@@ -106,6 +106,7 @@ export type FexiosMethods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
 
 export interface FexiosOptions {
   baseUrl?: string
+  headers?: HeadersInit
 }
 
 export type FexiosResponseHeaders = Record<string, string | number>

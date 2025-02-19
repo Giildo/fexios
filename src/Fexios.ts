@@ -3,12 +3,15 @@ import { FexiosResponse } from '@/FexiosResponse.ts'
 import type { ApiException, ExceptionMessageType } from '@jojotique/server'
 
 export class Fexios {
-  #baseUrl: string = ''
+  readonly #baseUrl: string = ''
+  readonly #headers: HeadersInit = {}
+
   #isTextData: boolean = false
   #withCredentials: boolean = false
 
   constructor(options: FexiosOptions = {}) {
     this.#baseUrl = options.baseUrl || ''
+    this.#headers = options.headers || {}
   }
 
   get credentials(): this {
@@ -64,6 +67,7 @@ export class Fexios {
       ...options,
       headers: {
         'Content-Type': 'application/json',
+        ...this.#headers,
         ...options?.headers,
       },
       method,
