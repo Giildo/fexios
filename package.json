@@ -16,7 +16,7 @@
     "browser",
     "axios"
   ],
-  "author": "Giild <giildo.jm@gmail.com>",
+  "author": "Giildo <giildo.jm@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -51,6 +51,7 @@
     "require": "./dist/fexios.umd.cjs"
   },
   "devDependencies": {
+    "@eslint/js": "catalog:",
     "@jojotique/server": "workspace:^",
     "@types/jsdom": "^21.1.7",
     "@types/node": "catalog:",
@@ -58,11 +59,13 @@
     "@vitest/eslint-plugin": "catalog:",
     "eslint": "catalog:",
     "eslint-plugin-oxlint": "catalog:",
+    "globals": "catalog:",
     "jsdom": "catalog:",
     "npm-run-all2": "^7.0.2",
     "oxlint": "catalog:",
-    "prettier": "^3.5.1",
+    "prettier": "^3.5.2",
     "typescript": "catalog:",
+    "typescript-eslint": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"
   }

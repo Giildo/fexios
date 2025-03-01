@@ -1,10 +1,10 @@
-import pluginVue from 'eslint-plugin-vue'
-import vueTsEslintConfig from '@vue/eslint-config-typescript'
-import pluginVitest from '@vitest/eslint-plugin'
+import globals from 'globals'
+import pluginJs from '@eslint/js'
+import tseslint from 'typescript-eslint'
 import oxlint from 'eslint-plugin-oxlint'
-import skipFormatting from '@vue/eslint-config-prettier/skip-formatting'
+import pluginVitest from '@vitest/eslint-plugin'
 
-export default [
+export default tseslint.config(
   {
     name: 'app/files-to-lint',
     files: ['**/*.{ts,mts,tsx,vue}'],
@@ -15,8 +15,12 @@ export default [
     ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**'],
   },
 
-  ...pluginVue.configs['flat/essential'],
-  ...vueTsEslintConfig(),
+  {
+    languageOptions: { globals: globals.browser },
+  },
+
+  pluginJs.configs.recommended,
+  ...tseslint.configs.recommended,
 
   {
     ...pluginVitest.configs.recommended,
@@ -24,7 +28,6 @@ export default [
   },
 
   oxlint.configs['flat/recommended'],
-  skipFormatting,
 
   {
     rules: {
@@ -51,4 +54,4 @@ export default [
       ],
     },
   },
-]
+)
