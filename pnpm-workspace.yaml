@@ -1,0 +1,5 @@
+onlyBuiltDependencies:
+  - esbuild
+
+overrides:
+  '@jojotique/server': link:../../../../../home/giildo/.local/share/pnpm/global/5/node_modules/@jojotique/server
