@@ -1,5 +1,5 @@
 {
-  "name": "@jojotique/fexios",
+  "name": "@giildo/fexios",
   "version": "1.1.0",
   "description": "Library for making AJAX calls based on the fetch API",
   "keywords": [
@@ -35,7 +35,8 @@
     "./package.json": "./package.json"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "build": "run-s type-check build-only",
