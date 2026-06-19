@@ -1,11 +1,19 @@
-import type { FexiosResponseHeaders, Status, StatusText } from '#/index'
-import type { ApiException, ExceptionMessageType } from '@jojotique/server'
+import type {
+  ApiException,
+  BasicFexiosResponse,
+  ExceptionMessageType,
+  FexiosResponseHeaders,
+  FexiosServerResponse,
+  HttpStatusCode,
+  Status,
+  StatusText,
+} from '#/index'
 
-export class FexiosResponse<D, E extends ExceptionMessageType = string> {
+export class FexiosResponseImpl<D, E extends ExceptionMessageType = string> implements BasicFexiosResponse<D> {
   readonly data: D | ApiException<E> | null
   readonly headers: FexiosResponseHeaders
   readonly ok: boolean
-  readonly response: Response
+  readonly response: FexiosServerResponse
   readonly status: Status
   readonly statusText: StatusText
 
@@ -13,7 +21,10 @@ export class FexiosResponse<D, E extends ExceptionMessageType = string> {
     this.data = data
     this.headers = {}
     this.ok = r.ok
-    this.response = { ...r }
+    this.response = {
+      code: r.status as HttpStatusCode,
+      message: r.statusText,
+    }
     this.status = r.status as Status
     this.statusText = r.statusText as StatusText
 

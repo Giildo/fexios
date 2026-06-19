@@ -1,6 +1,12 @@
-import type { FexiosMethods, FexiosOptions } from '#/index'
-import { FexiosResponse } from '@/FexiosResponse.ts'
-import type { ApiException, ExceptionMessageType } from '@jojotique/server'
+import { FexiosResponseImpl } from '@/FexiosResponse.ts'
+import type { ApiException, ExceptionMessageType, FexiosResponse } from '#/index'
+
+export type FexiosMethods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
+
+export interface FexiosOptions {
+  baseUrl?: string
+  headers?: HeadersInit
+}
 
 export class Fexios {
   readonly #baseUrl: string = ''
@@ -26,7 +32,7 @@ export class Fexios {
 
   async get<D, E extends ExceptionMessageType = string>(
     url: string,
-    options?: RequestInit,
+    options?: RequestInit
   ): Promise<FexiosResponse<D, E>> {
     return this.#getResponse<D, E>(await fetch(this.#getUrl(url), this.#getOptions('GET', options)))
   }
@@ -34,7 +40,7 @@ export class Fexios {
   async post<D, E extends ExceptionMessageType = string>(
     url: string,
     body: unknown,
-    options?: RequestInit,
+    options?: RequestInit
   ): Promise<FexiosResponse<D, E>> {
     return this.#getResponse<D, E>(await fetch(this.#getUrl(url), this.#getOptions('POST', options, body)))
   }
@@ -42,7 +48,7 @@ export class Fexios {
   async patch<D, E extends ExceptionMessageType = string>(
     url: string,
     body: unknown,
-    options?: RequestInit,
+    options?: RequestInit
   ): Promise<FexiosResponse<D, E>> {
     return this.#getResponse<D, E>(await fetch(this.#getUrl(url), this.#getOptions('PATCH', options, body)))
   }
@@ -50,14 +56,14 @@ export class Fexios {
   async put<D, E extends ExceptionMessageType = string>(
     url: string,
     body: unknown,
-    options?: RequestInit,
+    options?: RequestInit
   ): Promise<FexiosResponse<D, E>> {
     return this.#getResponse<D, E>(await fetch(this.#getUrl(url), this.#getOptions('PUT', options, body)))
   }
 
   async delete<D, E extends ExceptionMessageType = string>(
     url: string,
-    options?: RequestInit,
+    options?: RequestInit
   ): Promise<FexiosResponse<D, E>> {
     return this.#getResponse<D, E>(await fetch(this.#getUrl(url), this.#getOptions('DELETE', options)))
   }
@@ -90,9 +96,9 @@ export class Fexios {
       data = this.#isTextData ? ((await r.text()) as unknown as D) : await r.json()
     }
 
-    const response = new FexiosResponse<D, E>(data, r)
+    const response = new FexiosResponseImpl<D, E>(data, r)
     this.#reset()
-    return response
+    return response as FexiosResponse<D, E>
   }
 
   #getUrl(url: string): string {

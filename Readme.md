@@ -15,17 +15,17 @@ pnpm add fexios
 ## Usage
 
 ```ts
-import { Fexios } from '@jojotique/fexios';
+import { Fexios } from '@jojotique/fexios'
 
 const fexios = new Fexios({
   baseUrl: 'https://server.tld',
-});
+})
 ```
 
 ### Options
 
 | Option  | Type   | Description               | Default | Required |
-|---------|--------|---------------------------|---------|----------|
+| ------- | ------ | ------------------------- | ------- | -------- |
 | baseUrl | string | Base URL for all requests | `''`    | No       |
 
 ### Methods
@@ -49,21 +49,21 @@ interface Fexios {
 #### Exemple
 
 ```ts
-import { Fexios } from '@jojotique/fexios';
+import { Fexios } from '@jojotique/fexios'
 
 const fexios = new Fexios({
   baseUrl: 'https://server.tld',
-});
+})
 
-const response = await fexios.get('/api/users');
+const response = await fexios.get('/api/users')
 
-console.log(response.data);
+console.log(response.data)
 ```
 
 #### Options
 
 | Option         | Type                                                                                                                                                                      | Default     |
-|----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------|
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | body           | ReadableStream / Blob / BufferSource / FormData / URLSearchParams / string / null                                                                                         | null        |
 | cache          | "default" / "force-cache" / "no-cache" / "no-store" / "only-if-cached" / "reload"                                                                                         | default     |
 | credentials    | "include" / "omit" / "same-origin"                                                                                                                                        | same-origin |
@@ -85,15 +85,15 @@ console.log(response.data);
 To add credentials to the request, you can use the `credentials` option.
 
 ```ts
-import { Fexios } from '@jojotique/fexios';
+import { Fexios } from '@jojotique/fexios'
 
 const fexios = new Fexios({
   baseUrl: 'https://server.tld',
-});
+})
 
-const response = await fexios.credentials.get('/api/users');
+const response = await fexios.credentials.get('/api/users')
 
-console.log(response.data);
+console.log(response.data)
 ```
 
 ### Response

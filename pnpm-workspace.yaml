@@ -1,5 +1,5 @@
-onlyBuiltDependencies:
-  - esbuild
+allowBuilds:
+  lefthook: true
 
-overrides:
-  '@jojotique/server': link:../../../../../home/giildo/.local/share/pnpm/global/5/node_modules/@jojotique/server
+minimumReleaseAgeExclude:
+  - '@types/node@26.0.0'

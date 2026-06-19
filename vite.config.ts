@@ -1,7 +1,14 @@
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
+import dts from 'vite-plugin-dts'
 
 export default defineConfig({
+  plugins: [
+    dts({
+      bundleTypes: true,
+      copyDtsFiles: true,
+    }),
+  ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -11,9 +18,10 @@ export default defineConfig({
   build: {
     sourcemap: true,
     lib: {
-      entry: 'src/index.ts',
+      entry: fileURLToPath(new URL('./src/index.ts', import.meta.url)),
       name: 'Fexios',
       fileName: 'fexios',
+      formats: ['es'],
     },
   },
 })
