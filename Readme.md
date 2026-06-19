@@ -15,7 +15,7 @@ pnpm add fexios
 ## Usage
 
 ```ts
-import { Fexios } from '@jojotique/fexios'
+import { Fexios } from '@giildo/fexios'
 
 const fexios = new Fexios({
   baseUrl: 'https://server.tld',
@@ -49,7 +49,7 @@ interface Fexios {
 #### Exemple
 
 ```ts
-import { Fexios } from '@jojotique/fexios'
+import { Fexios } from '@giildo/fexios'
 
 const fexios = new Fexios({
   baseUrl: 'https://server.tld',
@@ -85,7 +85,7 @@ console.log(response.data)
 To add credentials to the request, you can use the `credentials` option.
 
 ```ts
-import { Fexios } from '@jojotique/fexios'
+import { Fexios } from '@giildo/fexios'
 
 const fexios = new Fexios({
   baseUrl: 'https://server.tld',

@@ -1,5 +1,3 @@
-import type { ApiException, ExceptionMessageType } from '@jojotique/server'
-
 export interface FexiosOptions {
   baseUrl?: string
   headers?: HeadersInit
