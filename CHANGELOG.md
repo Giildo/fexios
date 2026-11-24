@@ -2,6 +2,24 @@
 
 All notable changes to the fexios library.
 
+## 2.1.0 — 2026-11-24
+
+### ✨ Features
+
+- Allow combining the `.credentials` and `.text` one-shot modifiers: they are
+  now orthogonal, so `fexios.credentials.text.get(...)` sends credentials AND
+  returns the body as a string.
+
+### 📝 Documentation
+
+- Add the LGPL-3.0 license (full text in `LICENSE`, `package.json` license set
+  to `LGPL-3.0-or-later`).
+- Document the full release process in AGENTS.md.
+
+### ⬆️ Dependencies
+
+- Bump knip (6.42.1 → 6.48.0) and typescript-eslint (8.73.0 → 8.74.0).
+
 ## 2.0.0 — 2026-11-24
 
 ### ✨ Features
