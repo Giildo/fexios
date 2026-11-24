@@ -5,5 +5,35 @@ allowBuilds:
   esbuild: true
   lefthook: true
 
+# D6 — vitepress@1.6.4 (dernière dispo) tire un vite 5.x vulnérable.
+# On force un vite 6.x patché (>= 6.4.4) uniquement pour le package docs,
+# sans toucher au vite 8.x de la racine.
+overrides:
+  '@vitejs/plugin-vue>vite': '>=6.4.4 <7'
+  'vitepress>vite': '>=6.4.4 <7'
+  # DoS globparts (GHSA-g3hv-75wg-m249) via @microsoft/api-extractor > minimatch.
+  minimatch: '>=11.0.1'
+
 minimumReleaseAgeExclude:
   - '@types/node@26.0.0'
+
+# D9 — versions centralisées (catalog) pour cohérence avec les autres projets unistra.
+catalog:
+  # Requise par vite-plugin-dts (bundleTypes: true) — peer dep de build.
+  '@microsoft/api-extractor': ^7.60.1
+  '@types/node': ^26.6.6
+  '@vitest/coverage-v8': ^5.1.1
+  '@vitest/eslint-plugin': ^1.6.28
+  eslint: ^10.15.0
+  eslint-config-prettier: ^10.1.8
+  eslint-plugin-oxlint: ~1.82.0
+  knip: ^6.42.1
+  lefthook: ^2.2.2
+  npm-run-all2: ^9.1.0
+  oxfmt: ^0.67.0
+  oxlint: ~1.82.0
+  typescript: ~6.0.3
+  typescript-eslint: ^8.73.0
+  vite: ^8.3.8
+  vite-plugin-dts: ^5.1.2
+  vitest: ^5.1.1

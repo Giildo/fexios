@@ -54,26 +54,26 @@
     "type-check": "tsc"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@microsoft/api-extractor": "^7.60.1",
-    "@types/node": "^26.6.6",
-    "@vitest/coverage-v8": "^4.1.12",
-    "@vitest/eslint-plugin": "^1.6.28",
-    "eslint": "^10.15.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-oxlint": "~1.69.0",
-    "globals": "^17.14.0",
-    "jiti": "^2.7.0",
-    "lefthook": "^2.2.2",
-    "npm-run-all2": "^9.1.0",
-    "oxfmt": "^0.54.0",
-    "oxlint": "~1.69.0",
-    "typescript-eslint": "^8.73.0",
-    "vite": "^8.3.8",
-    "vite-plugin-dts": "^5.1.2",
-    "vitest": "^4.1.12"
+    "@microsoft/api-extractor": "catalog:",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "@vitest/eslint-plugin": "catalog:",
+    "eslint": "catalog:",
+    "eslint-config-prettier": "catalog:",
+    "eslint-plugin-oxlint": "catalog:",
+    "knip": "catalog:",
+    "lefthook": "catalog:",
+    "npm-run-all2": "catalog:",
+    "oxfmt": "catalog:",
+    "oxlint": "catalog:",
+    "typescript": "catalog:",
+    "typescript-eslint": "catalog:",
+    "vite": "catalog:",
+    "vite-plugin-dts": "catalog:",
+    "vitest": "catalog:"
   },
   "engines": {
-    "node": ">=22.0.0"
-  }
+    "node": "^22.18.0 || >=24.12.0"
+  },
+  "packageManager": "pnpm@12.23.0"
 }
