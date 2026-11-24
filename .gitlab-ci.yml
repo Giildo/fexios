@@ -7,7 +7,8 @@
 image: node:24
 
 variables:
-  VITEPRESS_BASE: '/$CI_PROJECT_PATH/'
+  # Le domaine Pages est <group>.gitlab.io, donc la base = chemin sans le groupe.
+  VITEPRESS_BASE: '/libs/fexios/'
   # Store pnpm local au repo pour être caché entre les runs.
   PNPM_HOME: '$CI_PROJECT_DIR/.pnpm'
 
