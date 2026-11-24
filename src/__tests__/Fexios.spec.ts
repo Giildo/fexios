@@ -228,7 +228,9 @@ describe('Fexios', () => {
     await expect(fexios.get('/items')).rejects.toBeInstanceOf(TypeError)
   })
 
-  // ── Fix m2 : modificateurs mutuellement exclusifs ──────────────────────────
+  // ── Fix m2 : modificateurs orthogonaux ─────────────────────────────────────
+  // .credentials et .text sont indépendants : les deux flags s'appliquent
+  // ensemble sur la même requête (plus d'exclusivité mutuelle).
   // On assert les DEUX dimensions : le mode de data via res.data
   // (string = texte, object = JSON) et le flag credentials via lastCall().
   // Les deux flags vivent dans deux endroits différents → pas de redondance.
@@ -253,24 +255,26 @@ describe('Fexios', () => {
     expect(res.data).toBe(raw) // texte, pas JSON
   })
 
-  test('m2 · .credentials puis .text → seul .text s\'applique (credentials effacé)', async () => {
+  test('m2 · .credentials puis .text → les deux flags s\'appliquent ensemble', async () => {
     const raw = '<html>brut</html>'
     fetchMock.mockResolvedValue(makeResponse({ body: raw }))
 
     const res = await fexios.credentials.text.get('/page')
 
-    expect(lastCall()[1]?.credentials).toBeUndefined() // .text a effacé .credentials
-    expect(res.data).toBe(raw) // texte
+    expect(lastCall()[1]?.credentials).toBe('include') // .credentials survit au chaînage .text
+    expect(res.data).toBe(raw) // texte brut, pas JSON
+    expect(res.ok).toBe(true)
   })
 
-  test('m2 · .text puis .credentials → seul .credentials s\'applique (text effacé)', async () => {
-    const body = { id: 9 }
-    fetchMock.mockResolvedValue(makeResponse({ body: JSON.stringify(body) }))
+  test('m2 · .text puis .credentials → les deux flags s\'appliquent ensemble', async () => {
+    const raw = '<html>brut</html>'
+    fetchMock.mockResolvedValue(makeResponse({ body: raw }))
 
-    const res = await fexios.text.credentials.get('/items')
+    const res = await fexios.text.credentials.get('/page')
 
-    expect(lastCall()[1]?.credentials).toBe('include') // .credentials a effacé .text
-    expect(res.data).toEqual(body) // JSON, pas texte
+    expect(lastCall()[1]?.credentials).toBe('include') // .credentials survit au chaînage .text
+    expect(res.data).toBe(raw) // texte brut, pas JSON
+    expect(res.ok).toBe(true)
   })
 
   test('m2 · one-shot : après consommation, la requête suivante repart propre', async () => {
@@ -282,6 +286,18 @@ describe('Fexios', () => {
     const second = await fexios.get('/items')
     expect(lastCall()[1]?.credentials).toBeUndefined()
     expect(second.data).toEqual({ id: 1 }) // JSON, pas texte
+  })
+
+  test('m2 · one-shot : après consommation des deux flags, la requête suivante repart propre', async () => {
+    fetchMock.mockResolvedValue(makeResponse({ body: '{"id":1}' }))
+
+    const first = await fexios.credentials.text.get('/items')
+    expect(lastCall()[1]?.credentials).toBe('include')
+    expect(first.data).toBe('{"id":1}') // string brute, mode texte actif
+
+    const second = await fexios.get('/items')
+    expect(lastCall()[1]?.credentials).toBeUndefined() // reset #withCredentials
+    expect(second.data).toEqual({ id: 1 }) // objet, mode JSON — reset #isTextData
   })
 
   test('série le body en {} quand il est undefined ou null sur un POST', async () => {

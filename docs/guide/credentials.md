@@ -31,9 +31,8 @@ await fexios.get('/public') // does NOT send credentials
 
 > [!NOTE]
 > The flag is consumed by the **next** request, even if you access the getter
-> without chaining a method (e.g. `fexios.credentials` on its own). The
-> modifiers are also mutually exclusive: setting `.text` clears `.credentials`
-> and vice versa.
+> without chaining a method (e.g. `fexios.credentials` on its own). It can be
+> combined with `.text` — the two modifiers are independent and both apply.
 
 ## Security notes
 
