@@ -16,6 +16,7 @@ type-safe HTTP.
 - **No throw on error** — HTTP errors are returned, not thrown. You stay in control.
 - **Fluent modifiers** — `.credentials` and `.text` chain cleanly.
 - **Default headers** — set once, applied to every request.
+- **Timeout & abort** — per-request `timeout` and `signal` for cancellation.
 - **ESM-only** — modern, tree-shakeable, zero runtime dependencies.
 
 ## Installation

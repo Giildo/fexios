@@ -10,8 +10,32 @@ Constructor options.
 interface FexiosOptions {
   baseUrl?: string
   headers?: HeadersInit
+  timeout?: number
 }
 ```
+
+| Field     | Type          | Description                             |
+| --------- | ------------- | --------------------------------------- |
+| `baseUrl` | `string`      | Base URL prepended to relative paths    |
+| `headers` | `HeadersInit` | Default headers sent with every request |
+| `timeout` | `number`      | Default request timeout in ms           |
+
+## `FexiosRequestOptions`
+
+Per-request options. It is the standard `RequestInit` extended with a `timeout`.
+
+```ts
+type FexiosRequestOptions = RequestInit & { timeout?: number }
+```
+
+- `timeout` (ms) — abort the request after this many milliseconds.
+- `signal` — standard `RequestInit` field, for manual abort.
+- All other `RequestInit` fields are passed through to `fetch`.
+
+> [!NOTE]
+> A per-request `timeout` overrides the constructor default. If both `timeout`
+> and `signal` are provided, they are combined — the request aborts on whichever
+> fires first.
 
 ## `ApiException<E>`
 

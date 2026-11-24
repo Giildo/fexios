@@ -1,7 +1,10 @@
 export interface FexiosOptions {
   baseUrl?: string
   headers?: HeadersInit
+  timeout?: number
 }
+
+export type FexiosRequestOptions = RequestInit & { timeout?: number }
 
 export interface BasicFexiosResponse<D> {
   data: D | ApiException | null
@@ -28,27 +31,33 @@ export class Fexios {
 
   constructor(options: FexiosOptions)
 
-  get<D, E extends ExceptionMessageType = string>(url: string, options?: RequestInit): Promise<FexiosResponse<D, E>>
+  get<D, E extends ExceptionMessageType = string>(
+    url: string,
+    options?: FexiosRequestOptions
+  ): Promise<FexiosResponse<D, E>>
 
   post<D, E extends ExceptionMessageType = string>(
     url: string,
     data: unknown,
-    options?: RequestInit
+    options?: FexiosRequestOptions
   ): Promise<FexiosResponse<D, E>>
 
   patch<D, E extends ExceptionMessageType = string>(
     url: string,
     data: unknown,
-    options?: RequestInit
+    options?: FexiosRequestOptions
   ): Promise<FexiosResponse<D, E>>
 
   put<D, E extends ExceptionMessageType = string>(
     url: string,
     data: unknown,
-    options?: RequestInit
+    options?: FexiosRequestOptions
   ): Promise<FexiosResponse<D, E>>
 
-  delete<D, E extends ExceptionMessageType = string>(url: string, options?: RequestInit): Promise<FexiosResponse<D, E>>
+  delete<D, E extends ExceptionMessageType = string>(
+    url: string,
+    options?: FexiosRequestOptions
+  ): Promise<FexiosResponse<D, E>>
 }
 
 export type HttpStatusCodeError = 400 | 401 | 403 | 404 | 409 | 500

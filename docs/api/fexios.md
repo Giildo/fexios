@@ -64,7 +64,7 @@ All methods return `Promise<FexiosResponse<D, E>>`.
 ```ts
 get<D, E extends ExceptionMessageType = string>(
   url: string,
-  options?: RequestInit
+  options?: FexiosRequestOptions
 ): Promise<FexiosResponse<D, E>>
 ```
 
@@ -74,7 +74,7 @@ get<D, E extends ExceptionMessageType = string>(
 post<D, E extends ExceptionMessageType = string>(
   url: string,
   body: unknown,
-  options?: RequestInit
+  options?: FexiosRequestOptions
 ): Promise<FexiosResponse<D, E>>
 ```
 
@@ -86,7 +86,7 @@ The `body` is serialized with `JSON.stringify(body ?? {})`.
 patch<D, E extends ExceptionMessageType = string>(
   url: string,
   body: unknown,
-  options?: RequestInit
+  options?: FexiosRequestOptions
 ): Promise<FexiosResponse<D, E>>
 ```
 
@@ -98,7 +98,7 @@ The `body` is serialized with `JSON.stringify(body ?? {})`.
 put<D, E extends ExceptionMessageType = string>(
   url: string,
   body: unknown,
-  options?: RequestInit
+  options?: FexiosRequestOptions
 ): Promise<FexiosResponse<D, E>>
 ```
 
@@ -109,7 +109,7 @@ The `body` is serialized with `JSON.stringify(body ?? {})`.
 ```ts
 delete<D, E extends ExceptionMessageType = string>(
   url: string,
-  options?: RequestInit
+  options?: FexiosRequestOptions
 ): Promise<FexiosResponse<D, E>>
 ```
 

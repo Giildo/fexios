@@ -291,4 +291,120 @@ describe('Fexios', () => {
 
     expect(lastCall()[1]?.credentials).toBe('include')
   })
+
+  describe('timeout', () => {
+    let timeoutSpy: Mock
+    let anySpy: Mock
+
+    beforeEach(() => {
+      timeoutSpy = vi.spyOn(AbortSignal, 'timeout')
+      anySpy = vi.spyOn(AbortSignal, 'any')
+    })
+
+    afterEach(() => {
+      timeoutSpy.mockRestore()
+      anySpy.mockRestore()
+    })
+
+    test('pose un AbortSignal (via AbortSignal.timeout) quand un timeout par requête est fourni', async () => {
+      const sentinel = new AbortController().signal
+      timeoutSpy.mockReturnValue(sentinel)
+      fetchMock.mockResolvedValue(makeResponse({ body: '{}' }))
+
+      await fexios.get('/items', { timeout: 5000 })
+
+      expect(timeoutSpy).toHaveBeenCalledTimes(1)
+      expect(timeoutSpy).toHaveBeenCalledWith(5000)
+      expect(lastCall()[1]?.signal).toBe(sentinel)
+      expect(lastCall()[1]).not.toHaveProperty('timeout')
+    })
+
+    test('utilise le timeout par défaut du constructeur quand aucun timeout par requête', async () => {
+      const sentinel = new AbortController().signal
+      timeoutSpy.mockReturnValue(sentinel)
+      const client = new Fexios({ baseUrl: 'https://api.example.com', timeout: 3000 })
+      fetchMock.mockResolvedValue(makeResponse({ body: '{}' }))
+
+      await client.get('/items')
+
+      expect(timeoutSpy).toHaveBeenCalledWith(3000)
+      expect(lastCall()[1]?.signal).toBe(sentinel)
+    })
+
+    test('le timeout par requête override le timeout par défaut du constructeur', async () => {
+      const sentinel = new AbortController().signal
+      timeoutSpy.mockReturnValue(sentinel)
+      const client = new Fexios({ baseUrl: 'https://api.example.com', timeout: 3000 })
+      fetchMock.mockResolvedValue(makeResponse({ body: '{}' }))
+
+      await client.get('/items', { timeout: 5000 })
+
+      expect(timeoutSpy).toHaveBeenCalledWith(5000)
+      expect(lastCall()[1]?.signal).toBe(sentinel)
+    })
+
+    test('combine timeout et signal utilisateur via AbortSignal.any quand les deux sont fournis', async () => {
+      const timeoutSentinel = new AbortController().signal
+      const combinedSentinel = new AbortController().signal
+      const userSignal = new AbortController().signal
+      timeoutSpy.mockReturnValue(timeoutSentinel)
+      anySpy.mockReturnValue(combinedSentinel)
+      fetchMock.mockResolvedValue(makeResponse({ body: '{}' }))
+
+      await fexios.get('/items', { timeout: 5000, signal: userSignal })
+
+      expect(timeoutSpy).toHaveBeenCalledWith(5000)
+      expect(anySpy).toHaveBeenCalledWith([timeoutSentinel, userSignal])
+      expect(lastCall()[1]?.signal).toBe(combinedSentinel)
+      expect(lastCall()[1]?.signal).not.toBe(userSignal)
+      expect(lastCall()[1]?.signal).not.toBe(timeoutSentinel)
+    })
+
+    test('ne pose aucun signal quand ni timeout par requête ni timeout par défaut', async () => {
+      fetchMock.mockResolvedValue(makeResponse({ body: '{}' }))
+
+      await fexios.get('/items')
+
+      expect(timeoutSpy).not.toHaveBeenCalled()
+      expect(anySpy).not.toHaveBeenCalled()
+      expect(lastCall()[1]?.signal).toBeUndefined()
+    })
+
+    test('passe le signal utilisateur tel quel à fetch quand aucun timeout est configuré', async () => {
+      const userSignal = new AbortController().signal
+      fetchMock.mockResolvedValue(makeResponse({ body: '{}' }))
+
+      await fexios.get('/items', { signal: userSignal })
+
+      expect(timeoutSpy).not.toHaveBeenCalled()
+      expect(anySpy).not.toHaveBeenCalled()
+      expect(lastCall()[1]?.signal).toBe(userSignal)
+    })
+
+    test('pose un signal même pour un timeout de 0 (timeout: 0 n\'est pas ignoré)', async () => {
+      const sentinel = new AbortController().signal
+      timeoutSpy.mockReturnValue(sentinel)
+      fetchMock.mockResolvedValue(makeResponse({ body: '{}' }))
+
+      await fexios.get('/items', { timeout: 0 })
+
+      expect(timeoutSpy).toHaveBeenCalledWith(0)
+      expect(lastCall()[1]?.signal).toBe(sentinel)
+    })
+
+    test('combine timeout 0 et signal utilisateur via AbortSignal.any', async () => {
+      const timeoutSentinel = new AbortController().signal
+      const combinedSentinel = new AbortController().signal
+      const userSignal = new AbortController().signal
+      timeoutSpy.mockReturnValue(timeoutSentinel)
+      anySpy.mockReturnValue(combinedSentinel)
+      fetchMock.mockResolvedValue(makeResponse({ body: '{}' }))
+
+      await fexios.get('/items', { timeout: 0, signal: userSignal })
+
+      expect(timeoutSpy).toHaveBeenCalledWith(0)
+      expect(anySpy).toHaveBeenCalledWith([timeoutSentinel, userSignal])
+      expect(lastCall()[1]?.signal).toBe(combinedSentinel)
+    })
+  })
 })

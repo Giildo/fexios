@@ -28,12 +28,12 @@ await fexios.post('/items', { name: 'Widget' })
 
 `get` and `delete` do not send a body.
 
-## `RequestInit` options
+## Request options
 
-Every method accepts the standard
+Every method accepts `FexiosRequestOptions` as its last argument — the standard
 [`RequestInit`](https://developer.mozilla.org/en-US/docs/Web/API/Request/RequestInit)
-as its last argument. The `method` and, for `post`/`patch`/`put`, the `body` are
-managed by Fexios — you only pass the rest.
+extended with a `timeout`. The `method` and, for `post`/`patch`/`put`, the `body`
+are managed by Fexios — you only pass the rest.
 
 | Option           | Type                                                                                                                                                                               | Default       |
 | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
@@ -102,3 +102,14 @@ const res = await fexios.get('/slow', { signal: controller.signal })
 // later
 controller.abort()
 ```
+
+### Timeout
+
+Abort the request automatically after a delay:
+
+```ts
+const res = await fexios.get('/slow', { timeout: 5000 }) // aborts after 5 s
+```
+
+A per-request `timeout` overrides the constructor default. If both `timeout`
+and `signal` are provided, the request aborts on whichever fires first.

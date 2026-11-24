@@ -9,10 +9,11 @@ interface FexiosOptions {
 }
 ```
 
-| Option    | Type          | Description                             | Default |
-| --------- | ------------- | --------------------------------------- | ------- |
-| `baseUrl` | `string`      | Base URL prepended to relative paths    | `''`    |
-| `headers` | `HeadersInit` | Default headers sent with every request | `{}`    |
+| Option    | Type          | Description                             | Default     |
+| --------- | ------------- | --------------------------------------- | ----------- |
+| `baseUrl` | `string`      | Base URL prepended to relative paths    | `''`        |
+| `headers` | `HeadersInit` | Default headers sent with every request | `{}`        |
+| `timeout` | `number`      | Default request timeout in ms           | `undefined` |
 
 Both options are optional — `new Fexios()` is valid.
 
@@ -55,3 +56,16 @@ await fexios.get('/users', { headers: { 'Content-Type': 'application/xml' } })
 > [!NOTE]
 > `HeadersInit` accepts a `Headers` instance, an array of `[string, string]`
 > pairs, or a `Record<string, string>`.
+
+## `timeout`
+
+`timeout` sets a default request timeout in milliseconds. A request that does
+not complete within the timeout is aborted (the promise rejects with an
+`AbortError`). A per-request `timeout` (see [Requests](/guide/requests))
+overrides this default.
+
+```ts
+const fexios = new Fexios({ timeout: 5000 })
+
+await fexios.get('/slow') // aborted after 5000 ms
+```
