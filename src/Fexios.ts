@@ -1,16 +1,11 @@
 import { FexiosResponseImpl } from '@/FexiosResponse.ts'
-import type { ApiException, ExceptionMessageType, FexiosResponse } from '#/index'
+import type { ApiException, ExceptionMessageType, FexiosOptions, FexiosResponse } from '#/index'
 
-export type FexiosMethods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
-
-export interface FexiosOptions {
-  baseUrl?: string
-  headers?: HeadersInit
-}
+type FexiosMethods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
 
 export class Fexios {
-  readonly #baseUrl: string = ''
-  readonly #headers: HeadersInit = {}
+  readonly #baseUrl: string
+  readonly #headers: HeadersInit
 
   #isTextData: boolean = false
   #withCredentials: boolean = false
@@ -72,7 +67,7 @@ export class Fexios {
     const requestOptions: RequestInit = {
       ...options,
       headers: {
-        'Content-Type': 'application/json',
+        ...(method === 'GET' || method === 'DELETE' ? {} : { 'Content-Type': 'application/json' }),
         ...this.#headers,
         ...options?.headers,
       },

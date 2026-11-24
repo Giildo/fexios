@@ -53,11 +53,10 @@ export class Fexios {
 
 export type HttpStatusCodeError = 400 | 401 | 403 | 404 | 409 | 500
 export type ExceptionMessageType = string | Record<string, string> | Array<string> | Array<Record<string, string>>
-export type HttpStatusCode = 200 | 201 | 204
 
 export interface FexiosServerResponse {
   message: string
-  code: HttpStatusCode
+  code: number
 }
 
 export interface ApiException<E extends ExceptionMessageType = ExceptionMessageType> {
@@ -66,7 +65,7 @@ export interface ApiException<E extends ExceptionMessageType = ExceptionMessageT
   status: HttpStatusCodeError
 }
 
-export type FexiosResponseHeaders = Record<string, string | number>
+export type FexiosResponseHeaders = Record<string, string>
 export type Status100 = 100 | 101 | 102 | 103
 export type Status200 = 200 | 201 | 202 | 203 | 204 | 205 | 206 | 207 | 208 | 226
 export type Status300 = 300 | 301 | 302 | 303 | 304 | 305 | 306 | 307 | 308
@@ -167,24 +166,5 @@ export type StatusText500 =
   | 'Not Extended'
   | 'Network Authentication Required'
 export type StatusText = StatusText100 | StatusText200 | StatusText300 | StatusText400 | StatusText500
-
-export interface BasicFexiosResponse<D> {
-  data: D | ApiException | null
-  headers: FexiosResponseHeaders
-  ok: boolean
-  response: FexiosServerResponse
-  status: Status
-  statusText: StatusText
-}
-
-export interface FexiosResponseError<E extends ExceptionMessageType> extends BasicFexiosResponse<null> {
-  data: ApiException<E>
-  ok: false
-}
-
-export interface FexiosResponseOK<D> extends BasicFexiosResponse<D> {
-  data: D
-  ok: true
-}
 
 export type FexiosResponse<D, E extends ExceptionMessageType = string> = FexiosResponseError<E> | FexiosResponseOK<D>

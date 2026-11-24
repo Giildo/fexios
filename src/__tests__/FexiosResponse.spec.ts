@@ -24,7 +24,7 @@ describe('FexiosResponse', () => {
     vi.unstubAllGlobals()
   })
 
-  test('convertit un header de réponse numérique en number et conserve les autres en string', () => {
+  test('conserve les headers de réponse en string', () => {
     const r = new Response(null, {
       status: 200,
       headers: { 'X-Content-Length': '1234', 'X-Request-Id': 'abc-123' },
@@ -32,7 +32,7 @@ describe('FexiosResponse', () => {
 
     const res = new FexiosResponseImpl<Record<string, unknown>>({}, r)
 
-    expect(res.headers['x-content-length']).toBe(1234)
+    expect(res.headers['x-content-length']).toBe('1234')
     expect(res.headers['x-request-id']).toBe('abc-123')
   })
 

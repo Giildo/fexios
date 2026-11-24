@@ -41,14 +41,6 @@ type ExceptionMessageType = string | Record<string, string> | Array<string> | Ar
 
 ## HTTP status codes
 
-### `HttpStatusCode`
-
-Success codes used by `FexiosServerResponse.code`.
-
-```ts
-type HttpStatusCode = 200 | 201 | 204
-```
-
 ### `HttpStatusCodeError`
 
 Error codes used by `ApiException.status`.

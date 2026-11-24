@@ -96,9 +96,9 @@ Every method resolves to a `FexiosResponse<D, E>`:
 ```ts
 interface FexiosResponse<D, E> {
   data: D | ApiException<E> | null
-  headers: Record<string, string | number>
+  headers: Record<string, string>
   ok: boolean
-  response: { code: HttpStatusCode; message: string }
+  response: { code: number; message: string }
   status: Status
   statusText: StatusText
 }

@@ -87,6 +87,20 @@ describe('Fexios', () => {
     ])
   })
 
+  test("n'pose pas Content-Type sur GET et DELETE, sauf si l'appelant en impose un", async () => {
+    fetchMock.mockResolvedValue(makeResponse({ body: '{}' }))
+
+    await fexios.get('/items')
+    expect(lastCall()[1]?.headers).not.toHaveProperty('Content-Type')
+
+    await fexios.delete('/items/1')
+    expect(lastCall()[1]?.headers).not.toHaveProperty('Content-Type')
+
+    // l'appelant peut imposer son propre Content-Type, même sur GET
+    await fexios.get('/items', { headers: { 'Content-Type': 'text/plain' } })
+    expect(lastCall()[1]?.headers).toMatchObject({ 'Content-Type': 'text/plain' })
+  })
+
   test("n'envoie pas de body sur GET et DELETE", async () => {
     fetchMock.mockResolvedValue(makeResponse({ body: '{}' }))
 

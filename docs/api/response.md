@@ -59,29 +59,28 @@ A normalized view of the server response.
 
 ```ts
 interface FexiosServerResponse {
-  code: HttpStatusCode
+  code: number
   message: string
 }
 ```
 
-| Field     | Type             | Description                    |
-| --------- | ---------------- | ------------------------------ |
-| `code`    | `HttpStatusCode` | The status code (200/201/204). |
-| `message` | `string`         | The status reason phrase.      |
+| Field     | Type     | Description               |
+| --------- | -------- | ------------------------- |
+| `code`    | `number` | The HTTP status code.     |
+| `message` | `string` | The status reason phrase. |
 
 ## `FexiosResponseHeaders`
 
-Response headers as a plain record. Numeric header values are coerced to
-`number`.
+Response headers as a plain record. All values are kept as `string`.
 
 ```ts
-type FexiosResponseHeaders = Record<string, string | number>
+type FexiosResponseHeaders = Record<string, string>
 ```
 
 ```ts
 const res = await fexios.get('/users')
 res.headers['Content-Type'] // 'application/json'
-res.headers['X-Request-Id'] // 12345 (number)
+res.headers['X-Request-Id'] // '12345'
 ```
 
 ## Narrowing example

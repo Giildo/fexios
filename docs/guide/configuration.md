@@ -39,7 +39,7 @@ await fexios.get('https://other.tld/users') // https://other.tld/users
 `headers` are merged into every request. They follow a clear precedence order —
 later sources win:
 
-1. `Content-Type: application/json` (set by Fexios)
+1. `Content-Type: application/json` (set by Fexios for `post`/`patch`/`put`)
 2. Instance `headers` (from the constructor)
 3. Per-request `headers` (from the `RequestInit` argument)
 
