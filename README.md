@@ -130,4 +130,5 @@ handling, and the complete API reference — lives in the
 
 ## License
 
-Released under the [MIT License](https://opensource.org/license/mit).
+Released under the [GNU Lesser General Public License v3.0](https://www.gnu.org/licenses/lgpl-3.0.txt)
+(or any later version). See the [LICENSE](./LICENSE) file for the full text.

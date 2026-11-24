@@ -15,7 +15,7 @@
   "bugs": {
     "url": "https://github.com/Giildo/fexios/issues"
   },
-  "license": "MIT",
+  "license": "LGPL-3.0-or-later",
   "author": "Giildo <giildo.jm@gmail.com>",
   "repository": {
     "type": "git",
