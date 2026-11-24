@@ -1,6 +1,9 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
+  // Préfixe d'URL : "/" en local, "/<namespace>/<project>/" sur GitLab Pages
+  // (injecté par la variable d'env VITEPRESS_BASE dans .gitlab-ci.yml).
+  base: process.env.VITEPRESS_BASE ?? '/',
   title: 'Fexios',
   description: 'A tiny, type-safe AJAX client built on the native fetch API.',
   cleanUrls: true,
