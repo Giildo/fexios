@@ -126,7 +126,7 @@ if (res.ok) {
 
 The full documentation — installation, configuration, request options, error
 handling, and the complete API reference — lives in the
-[docs site](./docs).
+[docs site](https://jojotique.gitlab.io/libs/fexios/).
 
 ## Contributing
 
