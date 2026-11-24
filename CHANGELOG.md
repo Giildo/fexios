@@ -2,6 +2,14 @@
 
 All notable changes to the fexios library.
 
+## 2.1.2 — 2026-11-24
+
+### 📝 Documentation
+
+- Fix the docs link in the README: the "Documentation" section now points
+  to the live site (`https://jojotique.gitlab.io/libs/fexios/`) instead of
+  a relative `./docs` path.
+
 ## 2.1.1 — 2026-11-24
 
 ### 📝 Documentation
