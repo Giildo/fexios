@@ -9,10 +9,6 @@ pre-commit:
       glob: '*.{js,mjs,cjs,ts,mts,cts,vue,json,jsonc}'
       run: pnpm eslint {staged_files} --fix --no-error-on-unmatched-pattern --no-warn-ignored
 
-    stylelint:
-      glob: 'packages/**/*.css'
-      run: pnpm stylelint {staged_files} --fix --allow-empty-input
-
     prettier:
       glob: '*.{js,mjs,cjs,ts,mts,cts,vue,json,jsonc,css,scss,md,yml,yaml,html,htm,java,go}'
       skip_empty: true
