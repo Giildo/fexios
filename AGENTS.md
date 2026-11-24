@@ -43,7 +43,9 @@
 - **Pas de throw sur erreur HTTP** : les erreurs HTTP sont retournées, pas levées. C'est le principe de design — ne pas le casser.
 - **Tests déterministes** : stubber `fetch` (pas d'appel réseau réel), données en fixture, pas de `sleep`.
 - **Notation de test** : `test(...)` plutôt que `it(...)` (préférence projet).
+- **Délégation des tests** : un besoin de test découvert en cours de route (gap de couverture, mutant survivant) est délégué à @buster-9000 (plan) puis @test-o-matic (forge) — pas de test forgé à la main par l'agent principal.
 - **Callouts de doc** : syntaxe Markdown standard `> [!tip]` et `> [!note]`.
+- **Suivi de revue** : quand un finding d'une revue (`.agents/reviews/`) est traité, cocher sa case `[x]` dans le rapport — le faire systématiquement.
 - **Git** : aucune commande git en écriture sans validation préalable (les commandes de lecture type `git log` sont OK).
 
 ## Commandes utiles
