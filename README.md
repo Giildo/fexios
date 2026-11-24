@@ -1,115 +1,132 @@
 # Fexios
 
-Library for making AJAX calls based on the fetch API.
+> A tiny, type-safe AJAX client built on top of the native `fetch` API.
+
+Fexios wraps `fetch` with a small, ergonomic API: a base URL, default headers,
+fluent modifiers for credentials and text responses, and fully typed responses
+with first-class error handling. No magic, no throw-on-error — just predictable,
+type-safe HTTP.
+
+**[Full documentation →](./docs)**
+
+## Features
+
+- **Native `fetch`** — no XHR, no polyfills. Works in modern browsers and Node ≥ 22.
+- **Type-safe responses** — `FexiosResponse<D, E>` unions the success and error shapes.
+- **No throw on error** — HTTP errors are returned, not thrown. You stay in control.
+- **Fluent modifiers** — `.credentials` and `.text` chain cleanly.
+- **Default headers** — set once, applied to every request.
+- **ESM-only** — modern, tree-shakeable, zero runtime dependencies.
 
 ## Installation
 
 ```bash
-npm install fexios
+npm install @giildo/fexios
 # or
-yarn add fexios
+yarn add @giildo/fexios
 # or
-pnpm add fexios
+pnpm add @giildo/fexios
 ```
 
-## Usage
+> [!NOTE]
+> Fexios requires **Node.js ≥ 22** and a runtime with native `fetch` support.
+
+## Quick start
 
 ```ts
 import { Fexios } from '@giildo/fexios'
 
 const fexios = new Fexios({
-  baseUrl: 'https://server.tld',
+  baseUrl: 'https://api.example.com',
+  headers: { 'X-App': 'my-app' },
 })
-```
 
-### Options
+const users = await fexios.get<User[]>('/users')
 
-| Option  | Type   | Description               | Default | Required |
-| ------- | ------ | ------------------------- | ------- | -------- |
-| baseUrl | string | Base URL for all requests | `''`    | No       |
-
-### Methods
-
-#### Définitions
-
-```ts
-interface Fexios {
-  get<D>(url: string, options?: RequestInit): Promise<FexiosResponse<D>>
-
-  post<D>(url: string, data: unknown, options?: RequestInit): Promise<FexiosResponse<D>>
-
-  patch<D>(url: string, data: unknown, options?: RequestInit): Promise<FexiosResponse<D>>
-
-  put<D>(url: string, data: unknown, options?: RequestInit): Promise<FexiosResponse<D>>
-
-  delete<D>(url: string, options?: RequestInit): Promise<FexiosResponse<D>>
+if (users.ok) {
+  console.log(users.data) // User[]
+} else {
+  console.log(users.data) // ApiException
 }
 ```
 
-#### Exemple
+## API overview
+
+### Constructor
 
 ```ts
-import { Fexios } from '@giildo/fexios'
-
-const fexios = new Fexios({
-  baseUrl: 'https://server.tld',
-})
-
-const response = await fexios.get('/api/users')
-
-console.log(response.data)
+new Fexios(options?: FexiosOptions)
 ```
 
-#### Options
+| Option    | Type          | Description                             | Default |
+| --------- | ------------- | --------------------------------------- | ------- |
+| `baseUrl` | `string`      | Base URL prepended to relative paths    | `''`    |
+| `headers` | `HeadersInit` | Default headers sent with every request | `{}`    |
 
-| Option         | Type                                                                                                                                                                      | Default     |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| body           | ReadableStream / Blob / BufferSource / FormData / URLSearchParams / string / null                                                                                         | null        |
-| cache          | "default" / "force-cache" / "no-cache" / "no-store" / "only-if-cached" / "reload"                                                                                         | default     |
-| credentials    | "include" / "omit" / "same-origin"                                                                                                                                        | same-origin |
-| headers        | [string, string][] / Record<string, string> / Headers                                                                                                                     | {}          |
-| integrity      | string                                                                                                                                                                    | null        |
-| keepalive      | boolean                                                                                                                                                                   | false       |
-| mode           | "cors" / "navigate" / "no-cors" / "same-origin"                                                                                                                           | cors        |
-| priority       | "high" / "low" / "medium"                                                                                                                                                 | medium      |
-| redirect       | "error" / "follow" / "manual"                                                                                                                                             | follow      |
-| referrer       | string                                                                                                                                                                    | ""          |
-| referrerPolicy | "no-referrer" / "no-referrer-when-downgrade" / "origin" / "origin-when-cross-origin" / "same-origin" / "strict-origin" / "strict-origin-when-cross-origin" / "unsafe-url" | no-referrer |
-| signal         | AbortSignal / null                                                                                                                                                        | null        |
+### Methods
 
-> [!WARNING]
-> Only the `body` is required for the `post`, `patch` and `put` methods.
+| Method   | Signature                          | Body |
+| -------- | ---------------------------------- | ---- |
+| `get`    | `get<D, E>(url, options?)`         | —    |
+| `post`   | `post<D, E>(url, body, options?)`  | JSON |
+| `patch`  | `patch<D, E>(url, body, options?)` | JSON |
+| `put`    | `put<D, E>(url, body, options?)`   | JSON |
+| `delete` | `delete<D, E>(url, options?)`      | —    |
 
-#### With credentials
+Every method accepts the standard
+[`RequestInit`](https://developer.mozilla.org/en-US/docs/Web/API/Request/RequestInit)
+as its last argument. The `method` and, for `post`/`patch`/`put`, the `body` are
+managed by Fexios.
 
-To add credentials to the request, you can use the `credentials` option.
+### Fluent modifiers
+
+| Modifier       | Effect                                                |
+| -------------- | ----------------------------------------------------- |
+| `.credentials` | Send cookies / credentials (`credentials: 'include'`) |
+| `.text`        | Return the body as a `string` instead of parsed JSON  |
 
 ```ts
-import { Fexios } from '@giildo/fexios'
-
-const fexios = new Fexios({
-  baseUrl: 'https://server.tld',
-})
-
-const response = await fexios.credentials.get('/api/users')
-
-console.log(response.data)
+const res = await fexios.credentials.text.get('/raw')
 ```
 
 ### Response
 
-#### Définitions
+Every method resolves to a `FexiosResponse<D, E>`:
 
 ```ts
-interface FexiosResponse<D> {
-  data: D
-  headers: FexiosResponseHeaders
+interface FexiosResponse<D, E> {
+  data: D | ApiException<E> | null
+  headers: Record<string, string | number>
   ok: boolean
-  response: Response
+  response: { code: HttpStatusCode; message: string }
   status: Status
   statusText: StatusText
 }
 ```
 
-All `Status` & `StatusText` are defined in
-the [HTTP Status Code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) documentation.
+Use `ok` to discriminate between success and error:
+
+```ts
+const res = await fexios.get<User>('/users/42')
+
+if (res.ok) {
+  const user = res.data // User
+} else {
+  const err = res.data // ApiException
+  console.log(err.status, err.message)
+}
+```
+
+> [!WARNING]
+> Fexios never throws on HTTP errors (4xx/5xx). It resolves with `ok: false`
+> and the error payload in `data`. Always check `ok` before using `data`.
+
+## Documentation
+
+The full documentation — installation, configuration, request options, error
+handling, and the complete API reference — lives in the
+[docs site](./docs).
+
+## License
+
+Released under the [MIT License](https://opensource.org/license/mit).
