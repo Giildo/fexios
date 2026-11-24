@@ -42,6 +42,7 @@
 - **Zéro dep runtime** : ne jamais ajouter une `dependency` (tout est `devDependency`).
 - **Pas de throw sur erreur HTTP** : les erreurs HTTP sont retournées, pas levées. C'est le principe de design — ne pas le casser.
 - **Tests déterministes** : stubber `fetch` (pas d'appel réseau réel), données en fixture, pas de `sleep`.
+- **Notation de test** : `test(...)` plutôt que `it(...)` (préférence projet).
 - **Callouts de doc** : syntaxe Markdown standard `> [!tip]` et `> [!note]`.
 - **Git** : aucune commande git en écriture sans validation préalable (les commandes de lecture type `git log` sont OK).
 
