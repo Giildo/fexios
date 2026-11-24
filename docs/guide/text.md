@@ -42,15 +42,16 @@ await fexios.get('/json') // data is parsed JSON
 
 > [!NOTE]
 > `.text` is a one-shot modifier: the flag is consumed by the **next** request,
-> even if you access the getter without chaining a method. The modifiers are
-> also mutually exclusive: setting `.credentials` clears `.text` and vice versa.
+> even if you access the getter without chaining a method. It can be combined
+> with `.credentials` — the two modifiers are independent and both apply.
 
 ## Combining with `.credentials`
 
-The modifiers are **mutually exclusive**: setting one clears the other, so only
-the last one you set applies. Order matters:
+The modifiers are **independent**: `.credentials` is a request option and
+`.text` is the response parsing, so they stack in any order and both apply to
+the same request:
 
 ```ts
-const res = await fexios.credentials.text.get('/private/raw') // `.text` wins
-const res2 = await fexios.text.credentials.get('/private/raw') // `.credentials` wins
+// sends credentials AND returns the body as a string
+const res = await fexios.credentials.text.get('/private/raw')
 ```

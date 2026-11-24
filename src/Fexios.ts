@@ -19,13 +19,11 @@ export class Fexios {
 
   get credentials(): this {
     this.#withCredentials = true
-    this.#isTextData = false
     return this
   }
 
   get text(): this {
     this.#isTextData = true
-    this.#withCredentials = false
     return this
   }
 
