@@ -36,12 +36,21 @@ await fexios.get('/json') // data is parsed JSON
 
 > [!NOTE]
 > For a `204 No Content` response, `data` is `null` regardless of whether
-> `.text` is used — there is no body to read.
+> `.text` is used — there is no body to read. The same applies to any response
+> with an empty body (e.g. a `200` with no content): `data` is `null` instead
+> of throwing.
+
+> [!NOTE]
+> `.text` is a one-shot modifier: the flag is consumed by the **next** request,
+> even if you access the getter without chaining a method. The modifiers are
+> also mutually exclusive: setting `.credentials` clears `.text` and vice versa.
 
 ## Combining with `.credentials`
 
-The modifiers stack in any order:
+The modifiers are **mutually exclusive**: setting one clears the other, so only
+the last one you set applies. Order matters:
 
 ```ts
-const res = await fexios.credentials.text.get('/private/raw')
+const res = await fexios.credentials.text.get('/private/raw') // `.text` wins
+const res2 = await fexios.text.credentials.get('/private/raw') // `.credentials` wins
 ```

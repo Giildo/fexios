@@ -228,16 +228,60 @@ describe('Fexios', () => {
     await expect(fexios.get('/items')).rejects.toBeInstanceOf(TypeError)
   })
 
-  test('applique les modificateurs one-shot au prochain appel puis repart propre', async () => {
+  // ── Fix m2 : modificateurs mutuellement exclusifs ──────────────────────────
+  // On assert les DEUX dimensions : le mode de data via res.data
+  // (string = texte, object = JSON) et le flag credentials via lastCall().
+  // Les deux flags vivent dans deux endroits différents → pas de redondance.
+
+  test('m2 · .credentials seul → credentials include posé, data en JSON', async () => {
+    const body = { id: 7 }
+    fetchMock.mockResolvedValue(makeResponse({ body: JSON.stringify(body) }))
+
+    const res = await fexios.credentials.get('/items')
+
+    expect(lastCall()[1]?.credentials).toBe('include')
+    expect(res.data).toEqual(body) // JSON, pas texte
+  })
+
+  test('m2 · .text seul → data en texte, credentials non posé', async () => {
+    const raw = '<html>brut</html>'
+    fetchMock.mockResolvedValue(makeResponse({ body: raw }))
+
+    const res = await fexios.text.get('/page')
+
+    expect(lastCall()[1]?.credentials).toBeUndefined()
+    expect(res.data).toBe(raw) // texte, pas JSON
+  })
+
+  test('m2 · .credentials puis .text → seul .text s\'applique (credentials effacé)', async () => {
+    const raw = '<html>brut</html>'
+    fetchMock.mockResolvedValue(makeResponse({ body: raw }))
+
+    const res = await fexios.credentials.text.get('/page')
+
+    expect(lastCall()[1]?.credentials).toBeUndefined() // .text a effacé .credentials
+    expect(res.data).toBe(raw) // texte
+  })
+
+  test('m2 · .text puis .credentials → seul .credentials s\'applique (text effacé)', async () => {
+    const body = { id: 9 }
+    fetchMock.mockResolvedValue(makeResponse({ body: JSON.stringify(body) }))
+
+    const res = await fexios.text.credentials.get('/items')
+
+    expect(lastCall()[1]?.credentials).toBe('include') // .credentials a effacé .text
+    expect(res.data).toEqual(body) // JSON, pas texte
+  })
+
+  test('m2 · one-shot : après consommation, la requête suivante repart propre', async () => {
     fetchMock.mockResolvedValue(makeResponse({ body: '{"id":1}' }))
 
-    const first = await fexios.credentials.text.get('/items')
+    await fexios.credentials.get('/items')
     expect(lastCall()[1]?.credentials).toBe('include')
-    expect(first.data).toBe('{"id":1}')
 
     const second = await fexios.get('/items')
     expect(lastCall()[1]?.credentials).toBeUndefined()
-    expect(second.data).toEqual({ id: 1 })
+    expect(second.data).toEqual({ id: 1 }) // JSON, pas texte
   })
 
   test('série le body en {} quand il est undefined ou null sur un POST', async () => {
@@ -269,27 +313,24 @@ describe('Fexios', () => {
     expect(lastCall()[0]).toBe('/items')
   })
 
-  // Limite connue (revue S3nt1n3l 2026-11-24, finding m4) : un 200 à corps vide
-  // sans .text fait lever r.json() (SyntaxError) → rejet. Ce test fige le
-  // comportement actuel ; à mettre à jour si l'humain corrige le finding.
-  test('rejette avec une SyntaxError quand un 200 a un corps vide sans .text', async () => {
+  // ── Fix m4 : corps vide → data null (plus de throw) ────────────────────────
+
+  test('m4 · 200 corps vide → data null, ok true, pas de throw', async () => {
     fetchMock.mockResolvedValue(makeResponse({ body: '' }))
 
-    await expect(fexios.get('/items')).rejects.toBeInstanceOf(SyntaxError)
+    const res = await fexios.get('/items')
+
+    expect(res.ok).toBe(true)
+    expect(res.data).toBeNull()
   })
 
-  // Limite connue (revue S3nt1n3l 2026-11-24, finding m2) : accéder au getter
-  // .credentials sans appel suivant laisse le flag posé — il s'applique à la
-  // requête suivante. Ce test fige le comportement actuel ; à mettre à jour
-  // si l'humain corrige le finding.
-  test('laisse le flag credentials posé quand le getter est accédé sans appel suivant', async () => {
-    fetchMock.mockResolvedValue(makeResponse({ body: '{}' }))
+  test('m4 · 200 corps vide AVEC .text → data null (pas de throw, pas de texte)', async () => {
+    fetchMock.mockResolvedValue(makeResponse({ body: '' }))
 
-    const client = fexios.credentials
+    const res = await fexios.text.get('/items')
 
-    await client.get('/items')
-
-    expect(lastCall()[1]?.credentials).toBe('include')
+    expect(res.ok).toBe(true)
+    expect(res.data).toBeNull()
   })
 
   describe('timeout', () => {

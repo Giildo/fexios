@@ -19,11 +19,13 @@ export class Fexios {
 
   get credentials(): this {
     this.#withCredentials = true
+    this.#isTextData = false
     return this
   }
 
   get text(): this {
     this.#isTextData = true
+    this.#withCredentials = false
     return this
   }
 
@@ -98,7 +100,10 @@ export class Fexios {
   async #getResponse<D, E extends ExceptionMessageType = string>(r: Response): Promise<FexiosResponse<D, E>> {
     let data: D | ApiException<E> | null = null
     if (r.status !== 204) {
-      data = this.#isTextData ? ((await r.text()) as unknown as D) : await r.json()
+      const text = await r.text()
+      if (text !== '') {
+        data = this.#isTextData ? (text as unknown as D) : (JSON.parse(text) as D)
+      }
     }
 
     const response = new FexiosResponseImpl<D, E>(data, r)

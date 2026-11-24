@@ -110,7 +110,8 @@ if (!res.ok) {
 
 - **Always check `ok`** before using `data` on a success path.
 - **Type the error** with the `E` generic so `data.message` is precise.
-- **Handle `204`** — a `204 No Content` response has `data: null` and `ok: true`.
+- **Handle empty bodies** — a `204 No Content` (or any response with an empty
+  body) has `data: null` and `ok: true`.
 - **Don't wrap in `try/catch` for HTTP errors** — they are not thrown. Use
   `try/catch` only for network-level failures (e.g. the request itself fails).
 

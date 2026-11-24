@@ -29,6 +29,12 @@ await fexios.get('/public') // does NOT send credentials
 > `.credentials` is a one-shot modifier. It does not change the instance
 > permanently — each request starts clean.
 
+> [!NOTE]
+> The flag is consumed by the **next** request, even if you access the getter
+> without chaining a method (e.g. `fexios.credentials` on its own). The
+> modifiers are also mutually exclusive: setting `.text` clears `.credentials`
+> and vice versa.
+
 ## Security notes
 
 - `credentials: 'include'` sends cookies for cross-origin requests. The server
