@@ -91,14 +91,24 @@ Message si nécessaire pour détailler le contenu du commit
 > **Ne faire une release QUE si l'utilisateur me le demande expressément.**
 > Pas de release « par opportunité ». L'autorisation doit être claire et explicite.
 
-fexios est publiée sur **npm** (`publishConfig.access: public`). Pas d'outil de changelog configuré (pas de git-cliff) — le changelog est optionnel / manuel.
+fexios est publiée sur **npm** (`publishConfig.access: public`). Le changelog est
+manuel (`CHANGELOG.md`, en anglais, blocs par gitmoji) — pas d'outil de
+changelog configuré.
 
 ### Process de release (version `X.Y.Z`)
 
-1. **Bump de version** — changer `"version"` dans `package.json` en `X.Y.Z`.
-2. **Commit** — `🔖 (release): bump version to X.Y.Z`.
-3. **Build** — `pnpm build` (vérifier que `dist/` est à jour).
-4. **Publish** — `pnpm publish`.
+1. **Bump de version** — changer `"version"` dans `package.json` en `X.Y.Z`,
+   puis committer le fichier seul : `🔖 (release): bump version to X.Y.Z`.
+2. **Merge** — merger `develop` dans `main` en `--no-ff`.
+3. **Changelog** — ajouter une section `X.Y.Z` dans `CHANGELOG.md` (en anglais)
+   avec les changements depuis le dernier tag, groupés en blocs par gitmoji
+   (✨ Features, 🐛 Bug Fixes, ♻️ Refactoring, 📝 Docs, ⬆️ Deps, 🔧 Chores,
+   🧪 Build, ✅ Tests, 👷 CI, 🔥 Removals). Les commits de bump (🔖) sont sautés.
+4. **Commit** — committer le `CHANGELOG.md` dans `main`.
+5. **Tag** — créer un tag `X.Y.Z` dont le message est la section changelog
+   depuis le dernier tag.
+6. **Publish** — `pnpm build` (vérifier que `dist/` est à jour) puis `pnpm publish`.
 
 > [!tip]
-> Pas de tag git ni de changelog automatique pour l'instant. Si on veut un changelog généré, on peut ajouter **git-cliff** (comme immersup) — à trancher avec l'humain.
+> Le tag porte la version exacte (ex. `2.1.0`, sans préfixe `v`). Le message
+> du tag = le contenu de la section changelog correspondante.
