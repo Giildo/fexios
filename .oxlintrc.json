@@ -8,5 +8,6 @@
   },
   "categories": {
     "correctness": "error"
-  }
+  },
+  "ignorePatterns": ["dist/**", "dist-ssr/**", "coverage/**", "docs/.vitepress/**"]
 }

@@ -4,7 +4,6 @@ import type {
   ExceptionMessageType,
   FexiosResponseHeaders,
   FexiosServerResponse,
-  HttpStatusCode,
   Status,
   StatusText,
 } from '#/index'
@@ -22,14 +21,14 @@ export class FexiosResponseImpl<D, E extends ExceptionMessageType = string> impl
     this.headers = {}
     this.ok = r.ok
     this.response = {
-      code: r.status as HttpStatusCode,
+      code: r.status,
       message: r.statusText,
     }
     this.status = r.status as Status
     this.statusText = r.statusText as StatusText
 
     for (const [key, value] of r.headers.entries()) {
-      this.headers[key] = Number.isNaN(Number(value)) ? value : Number(value)
+      this.headers[key] = value
     }
   }
 }

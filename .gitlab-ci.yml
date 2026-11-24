@@ -1,0 +1,35 @@
+# CI GitLab — build de la doc VitePress + déploiement sur GitLab Pages.
+#
+# Le site est servi sur https://<namespace>.gitlab.io/<project>/, d'où le
+# préfixe VITEPRESS_BASE (lu par docs/.vitepress/config.ts) pour que VitePress
+# génère les bons liens d'assets. En local, VITEPRESS_BASE est absent → base "/".
+
+image: node:24
+
+variables:
+  VITEPRESS_BASE: '/$CI_PROJECT_PATH/'
+  # Store pnpm local au repo pour être caché entre les runs.
+  PNPM_HOME: '$CI_PROJECT_DIR/.pnpm'
+
+cache:
+  key:
+    files:
+      - pnpm-lock.yaml
+  paths:
+    - .pnpm-store
+    - .pnpm
+
+pages:
+  stage: deploy
+  script:
+    - corepack enable
+    - pnpm config set store-dir .pnpm-store
+    - pnpm install --frozen-lockfile
+    - pnpm docs:build
+    - mkdir -p public
+    - cp -r docs/.vitepress/dist/. public/
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

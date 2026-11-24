@@ -1,16 +1,12 @@
 import { FexiosResponseImpl } from '@/FexiosResponse.ts'
-import type { ApiException, ExceptionMessageType, FexiosResponse } from '#/index'
+import type { ApiException, ExceptionMessageType, FexiosOptions, FexiosRequestOptions, FexiosResponse } from '#/index'
 
-export type FexiosMethods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
-
-export interface FexiosOptions {
-  baseUrl?: string
-  headers?: HeadersInit
-}
+type FexiosMethods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
 
 export class Fexios {
-  readonly #baseUrl: string = ''
-  readonly #headers: HeadersInit = {}
+  readonly #baseUrl: string
+  readonly #headers: HeadersInit
+  readonly #timeout: number | undefined
 
   #isTextData: boolean = false
   #withCredentials: boolean = false
@@ -18,21 +14,24 @@ export class Fexios {
   constructor(options: FexiosOptions = {}) {
     this.#baseUrl = options.baseUrl || ''
     this.#headers = options.headers || {}
+    this.#timeout = options.timeout
   }
 
   get credentials(): this {
     this.#withCredentials = true
+    this.#isTextData = false
     return this
   }
 
   get text(): this {
     this.#isTextData = true
+    this.#withCredentials = false
     return this
   }
 
   async get<D, E extends ExceptionMessageType = string>(
     url: string,
-    options?: RequestInit
+    options?: FexiosRequestOptions
   ): Promise<FexiosResponse<D, E>> {
     return this.#getResponse<D, E>(await fetch(this.#getUrl(url), this.#getOptions('GET', options)))
   }
@@ -40,7 +39,7 @@ export class Fexios {
   async post<D, E extends ExceptionMessageType = string>(
     url: string,
     body: unknown,
-    options?: RequestInit
+    options?: FexiosRequestOptions
   ): Promise<FexiosResponse<D, E>> {
     return this.#getResponse<D, E>(await fetch(this.#getUrl(url), this.#getOptions('POST', options, body)))
   }
@@ -48,7 +47,7 @@ export class Fexios {
   async patch<D, E extends ExceptionMessageType = string>(
     url: string,
     body: unknown,
-    options?: RequestInit
+    options?: FexiosRequestOptions
   ): Promise<FexiosResponse<D, E>> {
     return this.#getResponse<D, E>(await fetch(this.#getUrl(url), this.#getOptions('PATCH', options, body)))
   }
@@ -56,31 +55,39 @@ export class Fexios {
   async put<D, E extends ExceptionMessageType = string>(
     url: string,
     body: unknown,
-    options?: RequestInit
+    options?: FexiosRequestOptions
   ): Promise<FexiosResponse<D, E>> {
     return this.#getResponse<D, E>(await fetch(this.#getUrl(url), this.#getOptions('PUT', options, body)))
   }
 
   async delete<D, E extends ExceptionMessageType = string>(
     url: string,
-    options?: RequestInit
+    options?: FexiosRequestOptions
   ): Promise<FexiosResponse<D, E>> {
     return this.#getResponse<D, E>(await fetch(this.#getUrl(url), this.#getOptions('DELETE', options)))
   }
 
-  #getOptions(method: FexiosMethods, options?: RequestInit, body?: unknown) {
+  #getOptions(method: FexiosMethods, options?: FexiosRequestOptions, body?: unknown) {
+    const { timeout, ...rest } = options ?? {}
     const requestOptions: RequestInit = {
-      ...options,
+      ...rest,
       headers: {
-        'Content-Type': 'application/json',
+        ...(method === 'GET' || method === 'DELETE' ? {} : { 'Content-Type': 'application/json' }),
         ...this.#headers,
-        ...options?.headers,
+        ...rest.headers,
       },
       method,
     }
 
     if (['POST', 'PUT', 'PATCH'].includes(method)) requestOptions.body = JSON.stringify(body ?? {})
     if (this.#withCredentials) requestOptions.credentials = 'include'
+
+    const effectiveTimeout = timeout ?? this.#timeout
+    if (effectiveTimeout != null) {
+      requestOptions.signal = rest.signal
+        ? AbortSignal.any([AbortSignal.timeout(effectiveTimeout), rest.signal])
+        : AbortSignal.timeout(effectiveTimeout)
+    }
 
     return requestOptions
   }
@@ -93,7 +100,10 @@ export class Fexios {
   async #getResponse<D, E extends ExceptionMessageType = string>(r: Response): Promise<FexiosResponse<D, E>> {
     let data: D | ApiException<E> | null = null
     if (r.status !== 204) {
-      data = this.#isTextData ? ((await r.text()) as unknown as D) : await r.json()
+      const text = await r.text()
+      if (text !== '') {
+        data = this.#isTextData ? (text as unknown as D) : (JSON.parse(text) as D)
+      }
     }
 
     const response = new FexiosResponseImpl<D, E>(data, r)
