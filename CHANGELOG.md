@@ -2,6 +2,21 @@
 
 All notable changes to the fexios library.
 
+## 2.1.1 — 2026-11-24
+
+### 📝 Documentation
+
+- Add a `CONTRIBUTING.md` covering prerequisites, dev commands, code
+  conventions, testing conventions, commit format, and PR process.
+- Link the live docs site (`https://jojotique.gitlab.io/libs/fexios/`)
+  from the README.
+
+### 🔧 Chores
+
+- Fix the VitePress `base` for GitLab Pages: the group is already in the
+  domain, so the path prefix is `/libs/fexios/` instead of the full
+  `CI_PROJECT_PATH`.
+
 ## 2.1.0 — 2026-11-24
 
 ### ✨ Features
