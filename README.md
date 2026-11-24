@@ -7,7 +7,7 @@ fluent modifiers for credentials and text responses, and fully typed responses
 with first-class error handling. No magic, no throw-on-error — just predictable,
 type-safe HTTP.
 
-**[Full documentation →](./docs)**
+**[Full documentation →](https://jojotique.gitlab.io/libs/fexios/)**
 
 ## Features
 
