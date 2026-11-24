@@ -28,6 +28,10 @@ coverage
 # Lint
 .eslintcache
 
+# Stryker (mutation testing)
+reports/
+.stryker-tmp/
+
 # IA
 .opencode/
 .agents/

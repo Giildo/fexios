@@ -23,5 +23,5 @@
       "#/*": ["./types/*"]
     }
   },
-  "include": ["src", "types/**/*.d.ts", "vite.config.ts", "eslint.config.ts"]
+  "include": ["src", "types/**/*.d.ts", "vite.config.ts", "vitest.config.ts", "eslint.config.ts"]
 }

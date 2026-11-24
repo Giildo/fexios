@@ -51,10 +51,16 @@
     "docs:dev": "pnpm -C docs dev",
     "docs:preview": "pnpm -C docs preview",
     "test:unit": "vitest",
+    "test:unit:run": "vitest run",
+    "test:mutation": "stryker run",
+    "test:mutation:incremental": "stryker run --incremental",
+    "test:mutation:diff": "stryker run --mutate \"$(git diff --name-only HEAD | grep -E '^src/.*\\.ts$' | paste -sd, -)\"",
     "type-check": "tsc"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
+    "@stryker-mutator/core": "catalog:",
+    "@stryker-mutator/vitest-runner": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "@vitest/eslint-plugin": "catalog:",
